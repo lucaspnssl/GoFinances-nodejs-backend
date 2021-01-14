@@ -63,7 +63,7 @@ class ImportTransactionsService {
     const categoryRepository = getRepository(Category);
     const transactionRepository = getRepository(Transaction);
 
-    const existentCategories = await categoryRepository.find({
+    let existentCategories = await categoryRepository.find({
       title: In(transactions.map(transaction => transaction.category)),
     });
 
@@ -86,7 +86,7 @@ class ImportTransactionsService {
     const newCategories = categoryRepository.create(newTitles);
     await categoryRepository.save(newCategories);
 
-    existentCategories.push.apply(newCategories);
+    existentCategories = existentCategories.concat(newCategories);
 
     const fileTransactions: NewTransaction[] = transactions.map(transaction => {
       return {
